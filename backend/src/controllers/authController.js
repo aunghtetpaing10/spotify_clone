@@ -11,7 +11,7 @@ const authCallback = async (req, res) => {
       // If the user does not exist, create a new user
       const newUser = new User({
         clerkId: id,
-        fullName: `${firstName} ${lastName}`,
+        fullName: `${firstName || ""} ${lastName || ""}`.trim(),
         imageUrl,
       });
 
