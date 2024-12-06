@@ -20,7 +20,12 @@ const __dirname = path.resolve();
 
 const app = express();
 
-app.use(cors());
+app.use(cors(
+  {
+    origin: process.env.CLIENT_URL,
+    credentials: true,
+  }
+));
 app.use(express.json());
 app.use(clerkMiddleware()); // this will add auth to req obj => req.auth
 app.use(
