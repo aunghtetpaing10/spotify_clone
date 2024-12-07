@@ -16,7 +16,8 @@ const getAllAlbums = async (req, res) => {
 const getAlbumById = async (req, res) => {
   try {
     const { albumId } = req.params;
-    const album = await Album.findById(albumId);
+    // populate() replaces song IDs with actual song documents from the songs collection
+    const album = await Album.findById(albumId).populate("songs");
     if (!album) {
       res.status(404).json({ message: "Album not found" });
     }
