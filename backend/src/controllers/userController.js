@@ -3,7 +3,8 @@ import User from "../models/userModel.js";
 
 const getAllUsers = async (req, res) => {
   try {
-    const users = await User.find().select("-password");
+    const currentUserId = req.auth.userId;
+    const users = await User.find({ clerkId: { $ne: currentUserId } });
     if (!users) {
       return res.status(404).json({ message: "No users found" });
     }
