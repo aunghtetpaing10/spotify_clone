@@ -128,7 +128,7 @@ const deleteAlbum = async (req, res) => {
 };
 
 const checkAdmin = async (req, res) => {
-  res.json({ message: "Admin route", user: req.user });
+  res.status(200).json({ admin: true });
 };
 
 export { checkAdmin, createSong, deleteSong, createAlbum, deleteAlbum };
