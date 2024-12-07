@@ -5,6 +5,7 @@ import {
   ResizablePanelGroup,
 } from "@/components/ui/resizable";
 import LeftSidebar from "./components/LeftSidebar";
+import FriendsActivity from "./components/FriendsActivity";
 
 const MainLayout = () => {
   const isMobile = false;
@@ -37,7 +38,7 @@ const MainLayout = () => {
               maxSize={25}
               collapsedSize={0}
             >
-              Right side
+              <FriendsActivity />
             </ResizablePanel>
           </>
         )}
