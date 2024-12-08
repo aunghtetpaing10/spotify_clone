@@ -1,6 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { useMusicStore } from "@/stores/useMusicStore";
+import { usePlayerStore } from "@/stores/usePlayerStore";
 import { Clock, Pause, Play } from "lucide-react";
 import { useEffect } from "react";
 import { useParams } from "react-router-dom";
@@ -16,17 +17,26 @@ export const formatDuration = (seconds: number) => {
 const AlbumPage = () => {
   const { albumId } = useParams();
   const { currentAlbum, fetchAlbumbyId, isLoading } = useMusicStore();
-  const isPlaying = true;
+  const { isPlaying, playAlbum, currentSong, togglePlay } = usePlayerStore();
 
   useEffect(() => {
     if (albumId) fetchAlbumbyId(albumId);
   }, [albumId, fetchAlbumbyId]);
 
-  console.log(currentAlbum);
+  const handlePlayAlbum = () => {
+    if (!currentAlbum) return;
 
-  const handlePlayAlbum = () => {};
+    const isCurrentAlbumPlaying = currentAlbum._id === currentSong?.albumId;
+    if (isCurrentAlbumPlaying) togglePlay();
+    // If not playing, play the album
+    else playAlbum(currentAlbum?.songs, 0);
+  };
 
-  const handlePlaySong = (index: number) => {};
+  const handlePlaySong = (index: number) => {
+    if (!currentAlbum) return;
+
+    playAlbum(currentAlbum?.songs, index)
+  };
 
   if (isLoading) return null;
 
@@ -70,7 +80,7 @@ const AlbumPage = () => {
                 className="w-14 h-14 rounded-full bg-green-500 hover:bg-green-400"
                 onClick={handlePlayAlbum}
               >
-                {isPlaying ? (
+                {isPlaying && currentSong?.albumId === currentAlbum?._id ? (
                   <Pause className="h-7 w-7 text-black" />
                 ) : (
                   <Play className="h-7 w-7 text-black" />
@@ -92,7 +102,7 @@ const AlbumPage = () => {
               <div className="px-6">
                 <div className="space-y-2 py-4">
                   {currentAlbum?.songs.map((song, index) => {
-                    const isCurrentSong = false;
+                    const isCurrentSong = currentSong?._id === song._id;
                     return (
                       <div
                         key={song._id}
