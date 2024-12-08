@@ -2,8 +2,16 @@ import FeaturedSection from "@/components/FeaturedSection"
 import SectionGrid from "@/components/SectionGrid"
 import Topbar from "@/components/Topbar"
 import { ScrollArea } from "@/components/ui/scroll-area"
+import { useMusicStore } from "@/stores/useMusicStore"
+import { useEffect } from "react"
 
 const HomePage = () => {
+  const {featuredSongs, fetchFeaturedSongs} = useMusicStore();
+
+  useEffect(() => {
+    fetchFeaturedSongs()
+  }, [fetchFeaturedSongs])
+
   return (
     <div className="rounded-md overflow-hidden h-full bg-gradient-to-b from-zinc-800 to-zinc-900">
       <Topbar />
