@@ -58,7 +58,7 @@ const deleteSong = async (req, res) => {
   try {
     const { id } = req.params;
 
-    const song = await Song.findById(songId);
+    const song = await Song.findById(id);
 
     if (!song) {
       return res.status(404).json({ message: "Song not found" });
