@@ -4,12 +4,24 @@ import {
   ResizablePanel,
   ResizablePanelGroup,
 } from "@/components/ui/resizable";
+import { useEffect, useState } from "react";
 import LeftSidebar from "./components/LeftSidebar";
 import FriendsActivity from "./components/FriendsActivity";
-import AudioPlayer from "@/components/AudioPlayer";
+import AudioPlayer from "@/layout/components/AudioPlayer";
+import PlaybackControls from "./components/PlaybackControls";
 
 const MainLayout = () => {
-  const isMobile = false;
+  const [ isMobile, setIsMobile ] = useState(false);
+
+  const checkMobile = () => {
+    setIsMobile(window.innerWidth < 768);
+  }
+
+  useEffect(() => {
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    return () => window.removeEventListener('resize', checkMobile);
+  }, [])
 
   return (
     <div className="h-screen bg-black text-white felx flex-col">
@@ -45,6 +57,8 @@ const MainLayout = () => {
           </>
         )}
       </ResizablePanelGroup>
+
+      <PlaybackControls />
     </div>
   );
 };
