@@ -1,6 +1,7 @@
 import { create } from "zustand";
-import { Album, Song } from "@/types";
+import { Album, Song, Stats } from "@/types";
 import { axios } from "@/lib/axios";
+import { toast } from "react-hot-toast";
 
 type MusicStore = {
   songs: Song[];
@@ -11,6 +12,7 @@ type MusicStore = {
   featuredSongs: Song[];
   madeForYouSongs: Song[];
   trendingSongs: Song[];
+  stats: Stats;
 
   fetchAlbums: () => Promise<void>;
   fetchAlbumbyId: (id: string) => Promise<void>;
@@ -18,6 +20,8 @@ type MusicStore = {
   fetchFeaturedSongs: () => Promise<void>;
   fetchMadeForYouSongs: () => Promise<void>;
   fetchTrendingSongs: () => Promise<void>;
+  fetchStats: () => Promise<void>;
+  deleteSong: (id: string) => Promise<void>;
 };
 
 export const useMusicStore = create<MusicStore>((set) => ({
@@ -29,6 +33,12 @@ export const useMusicStore = create<MusicStore>((set) => ({
   featuredSongs: [],
   madeForYouSongs: [],
   trendingSongs: [],
+  stats: {
+    totalSongs: 0,
+    totalAlbums: 0,
+    totalArtists: 0,
+    totalUsers: 0,
+  },
 
   fetchSongs: async () => {
     set({ isLoading: true, error: null });
@@ -103,6 +113,36 @@ export const useMusicStore = create<MusicStore>((set) => ({
       set({ trendingSongs: res.data });
     } catch (error: any) {
       set({ error: error.message });
+    } finally {
+      set({ isLoading: false });
+    }
+  },
+
+  fetchStats: async () => {
+    set({ isLoading: true, error: null });
+
+    try {
+      const res = await axios.get("/stats");
+      set({ stats: res.data });
+    } catch (error: any) {
+      set({ error: error.message });
+    } finally {
+      set({ isLoading: false });
+    }
+  },
+
+  deleteSong: async (id: string) => {
+    set({ isLoading: true, error: null });
+
+    try {
+      await axios.delete(`/admin/songs/${id}`);
+      set((state) => ({
+        songs: state.songs.filter((song) => song._id !== id),
+      }));
+      toast.success("Song deleted successfully");
+    } catch (error: any) {
+      set({ error: error.message });
+      toast.error("Failed to delete song");
     } finally {
       set({ isLoading: false });
     }
