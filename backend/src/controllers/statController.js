@@ -32,7 +32,7 @@ const getStats = async (req, res) => {
       totalSongs,
       totalAlbums,
       totalUsers,
-      uniqueArtists: uniqueArtists[0].count || 0,
+      totalArtists: uniqueArtists[0].count || 0,
     });
   } catch (error) {
     console.log(error);
