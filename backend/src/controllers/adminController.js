@@ -4,6 +4,10 @@ import Album from "../models/albumModel.js";
 
 const uploadToCloudinary = async (file) => {
   try {
+    if (!file || !file.tempFilePath) {
+      throw new Error("Invalid file parameter");
+    }
+    
     const result = await cloudinary.uploader.upload(file.tempFilePath, {
       resource_type: "auto",
       folder: "music-app",
@@ -83,12 +87,12 @@ const deleteSong = async (req, res) => {
 const createAlbum = async (req, res) => {
   try {
     const { title, artist, releaseYear } = req.body;
-    const imageFile = req.files;
-
-    if (!imageFile) {
+    
+    if (!req.files || !req.files.imageFile) {
       return res.status(400).json({ message: "Please upload an image" });
     }
 
+    const imageFile = req.files.imageFile;
     const imageUrl = await uploadToCloudinary(imageFile);
 
     const album = new Album({
