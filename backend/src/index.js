@@ -4,6 +4,8 @@ import dotenv from "dotenv";
 import { clerkMiddleware } from "@clerk/express";
 import fileUpload from "express-fileupload";
 import path from "path";
+import cron from "node-cron";
+import fs from "fs";
 
 import userRoutes from "./routes/userRoutes.js";
 import authRoutes from "./routes/authRoutes.js";
@@ -36,6 +38,25 @@ app.use(
     limits: { fileSize: 10 * 1024 * 1024 }, // 10 MB
   })
 );
+
+// Schedule a cron job to run at the start of every hour
+const tempDir = path.join(process.cwd(), "temp");
+cron.schedule("0 * * * *", () => {
+  // Check if the temporary directory exists
+	if (fs.existsSync(tempDir)) {
+    // Read the contents of the temporary directory
+		fs.readdir(tempDir, (err, files) => {
+			if (err) {
+				console.log("error", err);
+				return;
+			}
+       // Iterate over the files and delete each one
+			for (const file of files) {
+				fs.unlink(path.join(tempDir, file), (err) => {});
+			}
+		});
+	}
+});
 
 app.use("/api/users", userRoutes);
 app.use("/api/auth", authRoutes);
