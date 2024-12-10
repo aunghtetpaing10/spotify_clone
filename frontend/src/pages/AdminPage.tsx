@@ -6,8 +6,10 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Album, Music } from "lucide-react";
 import SongsTabContent from "@/components/SongsTabContent";
 import AlbumsTabContent from "@/components/AlbumsTabContent";
+import { useAuthStore } from "@/stores/useAuthStore";
 
 const AdminPage = () => {
+  const { isAdmin, isLoading } = useAuthStore();
   const { fetchStats, fetchSongs, fetchAlbums } = useMusicStore();
 
   useEffect(() => {
@@ -15,6 +17,8 @@ const AdminPage = () => {
     fetchSongs();
     fetchAlbums();
   }, [fetchStats, fetchSongs, fetchAlbums]);
+
+  if (!isAdmin && !isLoading) return <div>Unauthorized</div>;
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-zinc-900 via-zinc-900 to-black text-zinc-100 p-8">
