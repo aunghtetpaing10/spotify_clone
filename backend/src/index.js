@@ -6,6 +6,7 @@ import fileUpload from "express-fileupload";
 import path from "path";
 import cron from "node-cron";
 import fs from "fs";
+import { createServer } from "http";
 
 import userRoutes from "./routes/userRoutes.js";
 import authRoutes from "./routes/authRoutes.js";
@@ -14,6 +15,7 @@ import songRoutes from "./routes/songRoutes.js";
 import albumRoutes from "./routes/albumRoutes.js";
 import statRoutes from "./routes/statRoutes.js";
 import { connectDB } from "./lib/db.js";
+import { initializeSocket } from "./lib/socket.js";
 
 dotenv.config();
 
@@ -21,6 +23,9 @@ const PORT = process.env.PORT;
 const __dirname = path.resolve();
 
 const app = express();
+
+const httpServer = createServer(app);
+initializeSocket(httpServer);
 
 app.use(cors(
   {
